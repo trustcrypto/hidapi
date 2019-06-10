@@ -228,15 +228,14 @@ static int lookup_functions()
 static HANDLE open_device(const char *path, BOOL enumerate)
 {
 	HANDLE handle;
-	DWORD desired_access = (enumerate)? 0: (GENERIC_WRITE | GENERIC_READ);
 	DWORD share_mode = FILE_SHARE_READ|FILE_SHARE_WRITE;
 
 	handle = CreateFileA(path,
-		desired_access,
+		GENERIC_WRITE,
 		share_mode,
-		NULL,
+		0,
 		OPEN_EXISTING,
-		FILE_FLAG_OVERLAPPED,/*FILE_ATTRIBUTE_NORMAL,*/
+		0,
 		0);
 
 	return handle;
@@ -576,25 +575,25 @@ HID_API_EXPORT hid_device * HID_API_CALL hid_open_path(const char *path)
 	}
 
 	/* Set the Input Report buffer size to 64 reports. */
-	res = HidD_SetNumInputBuffers(dev->device_handle, 64);
-	if (!res) {
-		register_error(dev, "HidD_SetNumInputBuffers");
-		goto err;
-	}
+	//res = HidD_SetNumInputBuffers(dev->device_handle, 64);
+	//if (!res) {
+	//	register_error(dev, "HidD_SetNumInputBuffers");
+	//	goto err;
+	//}
 
 	/* Get the Input Report length for the device. */
-	res = HidD_GetPreparsedData(dev->device_handle, &pp_data);
-	if (!res) {
-		register_error(dev, "HidD_GetPreparsedData");
-		goto err;
-	}
-	nt_res = HidP_GetCaps(pp_data, &caps);
-	if (nt_res != HIDP_STATUS_SUCCESS) {
-		register_error(dev, "HidP_GetCaps");	
-		goto err_pp_data;
-	}
-	dev->output_report_length = caps.OutputReportByteLength;
-	dev->input_report_length = caps.InputReportByteLength;
+	//res = HidD_GetPreparsedData(dev->device_handle, &pp_data);
+	//if (!res) {
+	//	register_error(dev, "HidD_GetPreparsedData");
+	//	goto err;
+	//}
+	//nt_res = HidP_GetCaps(pp_data, &caps);
+	//if (nt_res != HIDP_STATUS_SUCCESS) {
+	//	register_error(dev, "HidP_GetCaps");	
+	//	goto err_pp_data;
+	//}
+	dev->output_report_length = 8;
+	dev->input_report_length = 8;
 	HidD_FreePreparsedData(pp_data);
 
 	dev->read_buf = (char*) malloc(dev->input_report_length);
